@@ -6,15 +6,9 @@ Basic MVP
 //Create an account (C)
 //Login to your account (R)
 Edit your account (U)
-<<<<<<< HEAD
--Save their shows ©
--See your list of shows
-Edit your list of shows (U)
-=======
 //Save their shows ©
 //See your list of shows
 //Edit your list of shows (U)
->>>>>>> b1a43ed6f69c60a8b00b83bdada2fafddf2e11ed
 Mark episodes watched (U)
 //Remove shows from list (D)
 View basic analytics

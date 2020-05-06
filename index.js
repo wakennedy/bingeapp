@@ -3,6 +3,9 @@ const myshowbtn= document.getElementById("my-shows")
 const parent = document.getElementById("show")
 const searchResults = document.getElementsByClassName("div search-result")[0]
 const logoutbtn=document.getElementById("logout")
+const seasonSelector = document.getElementById("formControlSelect")
+
+
 
 myshowbtn.addEventListener("click", event => showUserShows())
 searchForm.addEventListener("submit", event => handleSearch(event))
@@ -304,6 +307,8 @@ function buildBetterShowCard(show) {
 
   let showStatus = document.getElementById("showStatus")
   showStatus.innerText = `${show.status}`
+
+  seasonSelector.addEventListener('change', function(event) {selectSeason(event.target.value, show)})
 }
 
 function buildBetterEpisodeCards(title, episodes) {
@@ -392,3 +397,9 @@ function buildBetterEpisodeCards(title, episodes) {
 
 //_____________TO DO__________________
 //add episode info(img, airdate) to db
+
+
+function selectSeason(seasonNumber, show) {
+  buildBetterEpisodeCards(show.filter())
+
+}
