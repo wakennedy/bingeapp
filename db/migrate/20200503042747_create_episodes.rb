@@ -6,6 +6,7 @@ class CreateEpisodes < ActiveRecord::Migration[6.0]
       t.integer :number
       t.string :name
       t.integer :api_id
+      t.string :image_url
       t.timestamps
     end
   end

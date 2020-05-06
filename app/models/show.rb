@@ -8,7 +8,7 @@ class Show < ApplicationRecord
         episodes = JSON.parse(res.body)
             #make episodes
         episodes.each do |episode|
-           Episode.create(show_id: self.id, season: episode["season"], number: episode["number"], name:episode["name"], api_id:episode["id"])
+           Episode.create(show_id: self.id, season: episode["season"], number: episode["number"], name:episode["name"], api_id:episode["id"], image_url: episode["image"]["medium"])
         end
     end
 end

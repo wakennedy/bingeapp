@@ -58,7 +58,7 @@ padding: 50px;
   .search-result img {
     padding-right: 10px;
   }
-  
+
   .card-tvshow {
     background-color: #133B63;
     margin: 20px;
@@ -114,8 +114,7 @@ padding: 50px;
     }
     #all-informations{
       background-color: #133B63;
-      padding-right: 300px;
-      padding-left: 300px;
+      
     }
     .informations-one h3{
       color: #FA6600;
@@ -169,11 +168,11 @@ padding: 50px;
   border: solid #FA6600;
   border-width:3px;
   padding: 0px  !important;
-  margin-top: 50px;
+  margin: 15px !important;
 
 }
 .episode-image{
-  width: 100%;
+  
   padding: 0px;
   padding: 0px !important;
 }
@@ -183,8 +182,8 @@ padding: 50px;
   padding: 0px !important;
 }
 .episode-title {
-  padding-top: 15px;
-  padding-bottom: 15px;
+  padding: 0px !important;
+
 }
 .episode-title h5{
   font-size: 14px;
@@ -197,11 +196,206 @@ padding: 50px;
 
 .watched {
   border: solid #FA6600;
-  border-radius: 10px 0px 0px 0px;
+  border-radius: 10px 10px 0px 0px;
   text-align: center;
   float: right;
   margin-top: 30px;
-  padding-top: 15px;
+  border-top: 5px solid #FA6600;
+  
+  
   
 }
 
+.watched img{
+  size: 30px !important;
+}
+
+
+body {
+  background: #133B63;
+  font-family: 'Roboto', sans-serif;
+}
+
+.login-box {
+  margin-top: 75px;
+  height: auto;
+  background: #133B63;
+  text-align: center;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+.login-key {
+  height: 100px;
+  font-size: 80px;
+  line-height: 100px;
+  background: #133B63;
+  
+}
+
+#remove {
+width: 30px;
+
+}
+
+.login-title {
+  margin-top: 15px;
+  text-align: center;
+  font-size: 30px;
+  letter-spacing: 2px;
+  margin-top: 15px;
+  font-weight: bold;
+  color: #FA6600;
+}
+
+.login-form {
+  margin-top: 25px;
+  text-align: left;
+}
+
+#input-login {
+  background-color: #ECF0F5;
+  border: none;
+  border-bottom: 2px solid #FA6600;
+  border-top: 2px solid #FA6600;
+  border-radius: 0px;
+  font-weight: bold;
+  outline: 0;
+  margin-bottom: 20px;
+  padding-left: 0px;
+  color: #FA6600;
+}
+
+
+.form-group {
+  margin-bottom: 40px;
+  outline: 0px;
+}
+
+.form-control:focus {
+  border-color: inherit;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  border-bottom: 2px solid #FA6600;
+  outline: 0;
+  background-color: #1A2226;
+  color: #ECF0F5;
+}
+
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0;
+}
+
+label {
+  margin-bottom: 0px;
+}
+
+.form-control-label {
+  font-size: 10px;
+  color: #FA6600;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.btn-outline-primary {
+  border-color: #FA6600 !important;
+  color: #FA6600 !important;
+  border-radius: 0px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  border-radius: 2px;
+}
+
+.btn-outline-primary:hover {
+  background-color: #FA6600 !important;
+  color: #ffffff !important;
+  right: 0px;
+  border-radius: 5px;
+}
+
+.login-btm {
+  float: right;
+}
+
+.login-button {
+  padding-right: 0px;
+  text-align: right;
+  margin-bottom: 25px;
+}
+
+.login-text {
+  text-align: left;
+  padding-left: 0px;
+  color: #FA6600;
+}
+
+.loginbttm {
+  padding: 0px;
+}
+
+
+
+@import url(https://fonts.googleapis.com/css?family=Oswald:400);
+
+.navigation {
+  width: 10%;
+  background-color: #FA6600;
+}
+
+.logout-icon {
+  width: 21px;
+  border-radius: 50px;
+  float: right;
+}
+
+.logout {
+  font-size: .8em;
+  font-family: 'Roboto', sans-serif;
+	position: relative;
+  right: -4px;
+  bottom: -4px;
+  overflow: hidden;
+  letter-spacing: 1px;
+  opacity: 0;
+  transition: opacity .45s;
+  -webkit-transition: opacity .35s;
+  
+}
+
+.button {
+	text-decoration: none;
+	float: right;
+  padding: 12px;
+  margin: 15px;
+  color: white;
+  border-bottom: 2px solid #133B63;
+  border-top: 2px solid #133B63;
+  width: 45px;
+  background-color: #FA6600;
+  transition: width .35s;
+  -webkit-transition: width .35s;
+  overflow: hidden
+}
+
+a:hover {
+  width: 100px;
+}
+
+a:hover .logout{
+  opacity: .9;
+}
+
+a {
+  text-decoration: none;
+}
+
+
+
+.seen > h5 {
+  color: #0f770f !important;
+}
+
+.hidden {
+  display: none;
+}

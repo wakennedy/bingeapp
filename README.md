@@ -57,11 +57,4 @@ Focus on pair programming
 Stand up first thing each day
 
 Tasks 
-Get rails api set up 
-Break open toy lab
-Build out html for three pages
-User login 
-Search bar functioning- populating results
-Post for backend
 Patch for episode
-Updating the DOM with shows and episodes

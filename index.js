@@ -12,40 +12,71 @@ searchForm.addEventListener("submit", event => handleSearch(event))
 
 showUserShows()
 
+myshowbtn.addEventListener("click", () => {
+  collapseParent.classList.add('hidden')
+  showUserShows()})
+searchForm.addEventListener("submit", event => {
+  collapseParent.classList.add('hidden')
+  handleSearch(event)
+})
+
 //handles the search bar input
 function handleSearch(e) {
   e.preventDefault()
   fetch(`http://api.tvmaze.com/search/shows?q=${e.target.title.value}`)
   .then(resp => resp.json())
-  .then(resp=> {parent.innerText = ""
-    resp.forEach( title =>makeCard(title))
+  .then(resp => {parent.innerText = ""
+  console.log(resp)
+    resp.forEach(title => {
+    console.log(title)
+     makeCard(title)
+  })
 })
+  .catch((error) => {
+    console.error('Error:', error);
+  })
 }
 
-//--------TO DO------------
 //HANDLE CASE OF NO IMAGE AVAILABLE
-//FILL IN SHOW DATA
-//CONFIRM POPULATION OF CSS ELEMENTS
 function makeCard(title) {
+  console.log(title)
   let card = document.createElement('div')
   card.className = "col-md-4 card-tvshow"
   let div1=document.createElement('div')
   div1.className="container-fluid"
   let div2=document.createElement('div')
   div2.className="row"
-  div2.innerHTML =`
-        <div class="col-sm-12 cardimage">
-          <img src="${title.show.image.original}" alt="">
-        </div>`
+  if (title.show.image){
+    div2.innerHTML =`
+          <div class="col-sm-12 cardimage">
+            <img src="${title.show.image.original}" alt="">
+          </div>`
+  }
+  else {
+    div2.innerHTML =`
+          <div class="col-sm-12 cardimage">
+            <img src="img/tv-2268952_1280.png" alt="">
+          </div>`
+  }
+
   let div3=document.createElement('div')
   div3.className="container information-box"
   let div4=document.createElement('div')
   div4.className="row"
+
+  if (title.show.network && title.show.premiered){
   div4.innerHTML =`
       <div class="col-sm-6 information-left">
         <h3>${title.show.name}</h3>
         <h6>${title.show.network.name} - ${title.show.premiered}</h6>
       </div>`
+  }
+  else{
+    div4.innerHTML =`
+        <div class="col-sm-6 information-left">
+          <h3>${title.show.name}</h3>
+        </div>`
+    }
 
   let follow=document.createElement('div')
   follow.className="col-sm-6 information-right"
@@ -70,7 +101,7 @@ function handleFollow(e,object){
                   "api_id": object.show.id,
                   "title": object.show.name
                   }
-      fetch('http://localhost:8008/user_shows', {
+      fetch('http://localhost:3000/user_shows', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -88,10 +119,9 @@ function handleFollow(e,object){
       
 }
 
-//send a user eventually...
 function showUserShows() {
   parent.innerText = ""
-  fetch(`http://localhost:8008/user_shows/${sessionStorage.getItem("user")}`)
+  fetch(`http://localhost:3000/user_shows/${sessionStorage.getItem("user")}`)
   .then(resp=> resp.json())
   .then(resp=>{
     resp.forEach(usershow => getAPIshow(usershow))})
@@ -130,7 +160,7 @@ function makeusercards(title, usershow){
   follow.innerHTML =`
         <div class="">
           <div class="follow" style= "cursor: pointer">
-              X
+          <span class="remove"> <img id="remove" src="img/delete.png" alt=""> </span>
         </div>`
   let info=document.createElement('div')
   info.className="col-sm-6 information-right"
@@ -148,21 +178,22 @@ function makeusercards(title, usershow){
   card.appendChild(div1)
   parent.appendChild(card)
   info.addEventListener('click',event => showInfo(title, usershow))
-  follow.addEventListener('click', event => handleDelete(usershow))
+  follow.addEventListener('click', event => handleDelete(usershow, card))
 }
 
-function handleDelete(usershow){
-      fetch(`http://localhost:8008/user_shows/${usershow.id}`, {
+function handleDelete(usershow, card){
+      fetch(`http://localhost:3000/user_shows/${usershow.id}`, {
         method: 'DELETE',
       })
-      .then(showUserShows()) 
+      .then(card.remove()) 
 }
 
 function showInfo(title, usershow){
+  collapseParent.classList.remove('hidden')
   parent.innerText = ""
   makeusercards(title)
   buildBetterShowCard(title)
-  fetch(`http://localhost:8008/episodes/${usershow.show_id}`)
+  fetch(`http://localhost:3000/episodes/${usershow.show_id}`)
   .then(resp => resp.json())
   .then(resp=> buildBetterEpisodeCards(title ,resp))
 }
@@ -216,7 +247,7 @@ if (!sessionStorage.getItem("user")){
     const data = { username: uname, 
                   location: loc };
                  
-    fetch('http://localhost:8008/users', {
+    fetch('http://localhost:3000/users', {
       method: 'POST', // or 'PUT'
       headers: {
         'Content-Type': 'application/json',
@@ -236,7 +267,7 @@ if (!sessionStorage.getItem("user")){
   }
 
   function findUser(uname, loc){
-    fetch('http://localhost:8008/users')
+    fetch('http://localhost:3000/users')
     .then(resp=> resp.json())
     .then(resp=>{
       user=resp.find(user => user.username==uname && user.location==loc)
@@ -256,38 +287,6 @@ logoutbtn.addEventListener("click", () => {
   location.reload()
 } 
 )
-const collapseParent = document.getElementById("collapseExample")
-const epiDiv = document.getElementById("episodeee")
-
-// function buildShowCard(show) {
-//   let showCardBody = document.createElement('div')
-//   showCardBody.className = "card-body"
-//   showCardBody.id = "all-informations"
-
-//   let infoDiv = document.createElement('div')
-//   infoDiv.className = "col-sm-6 informations-one"
-
-//   let infoH3 = document.createElement('h3')
-//   infoH3.innerText = `${show.name}`
-
-//   let infoH6 = document.createElement('h6')
-//   infoH6.innerText = `${show.network.name}`
-
-//   let summaryDiv = document.createElement('div')
-//   summaryDiv.className = "col-sm-12"
-
-//   let summaryP = document.createElement('p')
-//   summaryP.innerHTML = `${show.summary}`
-
-//   //collapseParent.innerText = ""
-//   collapseParent.appendChild(showCardBody)
-//   showCardBody.appendChild(infoDiv)
-//   infoDiv.appendChild(infoH3)
-//   infoDiv.appendChild(infoH6)
-//   showCardBody.appendChild(summaryDiv)
-//   summaryDiv.appendChild(summaryP)
-  
-// }
 
 function buildBetterShowCard(show) {
   let showName = document.getElementById("showName")
@@ -297,10 +296,7 @@ function buildBetterShowCard(show) {
   showNetwork.innerText = `${show.network.name}`
 
   let showSummary = document.getElementById("showSummary")
-  showSummary.innerHTML = 
-  `
-  ${show.summary}
-  `
+  showSummary.innerHTML = `${show.summary}`
 
   let showAired = document.getElementById("showAired")
   showAired.innerText = `${show.premiered}`
@@ -312,10 +308,12 @@ function buildBetterShowCard(show) {
 }
 
 function buildBetterEpisodeCards(title, episodes) {
+  fetch(`http://localhost:3000/user_episodes/${sessionStorage.getItem("user")}`)
+  .then(resp => resp.json())
+  .then(resp=> { let newresp=resp.map(resp=> resp.episode.id)
 
   episodes.forEach(episode => {
   let episodeRow = document.getElementById("episodeRow")
-
 
   let totalDiv = document.createElement('div')
   totalDiv.id = "episodeee"
@@ -330,16 +328,22 @@ function buildBetterEpisodeCards(title, episodes) {
   div3.className = "row"
   div2.appendChild(div3)
 
-
   let imgDiv = document.createElement('div')
   imgDiv.className = "col-md-12 episode-image"
   div3.appendChild(imgDiv)
   let img = document.createElement('img')
-  img.src = `${title.image.original}`
+  img.src = `${episode.image_url}`
   imgDiv.appendChild(img)
 
   let infoDiv = document.createElement('div')
-  infoDiv.className = "container episode-title"
+  infoDiv.className = "episode-title"
+  // infoDiv.className = "col-sm-12 watched"
+  // icon.innerHTML = ` <img src="img/interface (1).png" alt="">`
+
+  if (newresp.includes(episode.id)){
+    infoDiv.classList.toggle("seen")
+    }
+
   div3.appendChild(infoDiv)
 
   let titleh5 = document.createElement('h5')
@@ -350,56 +354,50 @@ function buildBetterEpisodeCards(title, episodes) {
   airh6.innerText = `Episode Airdate goes here`
   infoDiv.appendChild(airh6)
 
-
   let icon = document.createElement('div')
-  icon.className = "col-md-3 watched"
-  icon.innerHTML = 
-  `
-  <a href="#">
-    <img src="img\interface (1).png" alt="">
-  </a>
-  `
+  icon.className = "col-sm-12 watched"
+  icon.innerHTML = ` <img src="img/hide.png" alt="">`
   div3.appendChild(icon)
+  icon.addEventListener('click', ()=> handleSeen(event, episode, infoDiv))
 
-  })
+  })})
 }
 
 
-// function buildEpisodeCards(episodes) {
-//   episodes.forEach(episode => {
-
-//   let div1 = document.createElement('div')
-//   div1.className = "container-fluid"
-//   epiDiv.appendChild(div1)
-//   collapseParent.appendChild(epiDiv)
-
-//   let div2 = document.createElement('div')
-//   div2.className = "row"
-//   div1.appendChild(div2)
-
-//   // let imgDiv = document.createElement('div')
-//   // imgDiv.className = "col-md-12 episode-image"
-//   // imgDiv.innerHTML = `<img src="${episode.image.original}" alt="">`
-//   // div2.appendChild(imgDiv)
-
-//   let infoDiv = document.createElement('div')
-//   infoDiv.className = "col-md-9 episode-title"
-//   infoDiv.innerHTML = 
-//   `
-//   <h5>${episode.name}</h5>
-//   <h6>${episode.airdate}</h6>
-//   `
-//   div2.appendChild(infoDiv)
-//  })
-// }
-
-
+function handleSeen (event, episode, infoDiv) {
+  if (!infoDiv.classList.contains("seen")){
+    let data ={ "user_id": sessionStorage.getItem("user"),
+    "episode_id": episode.id
+    }
+    fetch('http://localhost:3000/user_episodes', {
+    method: 'POST',
+    headers: {
+    'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+    infoDiv.classList.toggle("seen")
+    infoDiv.nextSibling.getElementsByTagName("img")[0].src="img/visibility-button.png"
+    console.log('Success:', data);
+    })
+    .catch((error) => {
+    console.error('Error:', error);
+    })
+  }
+  else {
+    infoDiv.classList.toggle("seen")
+    infoDiv.nextSibling.getElementsByTagName("img")[0].src="img/interface (1).png"
+  }
+}
 
 //_____________TO DO__________________
 //add episode info(img, airdate) to db
-
+//add episode info(img, airdate) to db
 
 function selectSeason(seasonNumber, show) {
   buildBetterEpisodeCards(show.filter())
 
 }
+
