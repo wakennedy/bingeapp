@@ -3,7 +3,7 @@ class UserEpisodesController < ApplicationController
     def show
         user = User.find(params[:id])
         user_episodes=user.user_episodes
-        render json: user_episodes.to_json(:include => [:episode])
+        render json: user_episodes.to_json
     end
 
     def create

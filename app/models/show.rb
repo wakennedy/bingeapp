@@ -3,14 +3,6 @@ class Show < ApplicationRecord
     has_many :user_shows
     has_many :users, through: :user_shows
 
-    def populate
-        res = RestClient.get("http://api.tvmaze.com/shows/#{self.api_id}/episodes")
-        episodes = JSON.parse(res.body)
-            #make episodes
-        episodes.each do |episode|
-           Episode.create(show_id: self.id, season: episode["season"], number: episode["number"], name:episode["name"], api_id:episode["id"], image_url: episode["image"]["medium"])
-        end
-    end
 end
 
     # EPISODE RESPONSE SAMPLE

@@ -24,7 +24,6 @@ class UserShowsController < ApplicationController
           end
         else 
            newshow= Show.create(title: params["title"], api_id: params["api_id"].to_i)
-           newshow.populate
            user_show=UserShow.create(user_id: params["user_id"].to_i ,show_id: newshow.id)
         end
         render json: user_show

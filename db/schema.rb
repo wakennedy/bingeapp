@@ -15,17 +15,6 @@ ActiveRecord::Schema.define(version: 2020_05_03_050225) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "episodes", force: :cascade do |t|
-    t.integer "show_id"
-    t.integer "season"
-    t.integer "number"
-    t.string "name"
-    t.integer "api_id"
-    t.string "image_url"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "shows", force: :cascade do |t|
     t.string "title"
     t.integer "api_id"
@@ -56,5 +45,3 @@ ActiveRecord::Schema.define(version: 2020_05_03_050225) do
   end
 
 end
-
-

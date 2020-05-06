@@ -334,8 +334,6 @@ label {
   padding: 0px;
 }
 
-
-
 @import url(https://fonts.googleapis.com/css?family=Oswald:400);
 
 .navigation {
@@ -350,11 +348,11 @@ label {
 }
 
 .logout {
-  font-size: .8em;
-  font-family: 'Roboto', sans-serif;
+  font-size: .3em !important;
+  font-family: 'lato', sans-serif;
 	position: relative;
-  right: -4px;
-  bottom: -4px;
+  right: 0px;
+  bottom: 0px;
   overflow: hidden;
   letter-spacing: 1px;
   opacity: 0;
@@ -389,8 +387,6 @@ a:hover .logout{
 a {
   text-decoration: none;
 }
-
-
 
 .seen > h5 {
   color: #0f770f !important;
