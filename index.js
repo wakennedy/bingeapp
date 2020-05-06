@@ -4,8 +4,7 @@ const parent = document.getElementById("show")
 const searchResults = document.getElementsByClassName("div search-result")[0]
 const logoutbtn=document.getElementById("logout")
 const seasonSelector = document.getElementById("formControlSelect")
-
-
+const collapseParent = document.getElementById("collapseExample")
 
 myshowbtn.addEventListener("click", event => showUserShows())
 searchForm.addEventListener("submit", event => handleSearch(event))
@@ -96,7 +95,7 @@ function handleFollow(e,object){
                   "api_id": object.show.id,
                   "title": object.show.name
                   }
-      fetch('http://localhost:3000/user_shows', {
+      fetch('http://localhost:8008/user_shows', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -115,7 +114,7 @@ function handleFollow(e,object){
 
 function showUserShows() {
   parent.innerText = ""
-  fetch(`http://localhost:3000/user_shows/${sessionStorage.getItem("user")}`)
+  fetch(`http://localhost:8008/user_shows/${sessionStorage.getItem("user")}`)
   .then(resp=> resp.json())
   .then(resp=>{
     resp.forEach(usershow => getAPIshow(usershow))})
@@ -184,7 +183,7 @@ function makeusercards(title, usershow){
 }
 
 function handleDelete(usershow, card){
-      fetch(`http://localhost:3000/user_shows/${usershow.id}`, {
+      fetch(`http://localhost:8008/user_shows/${usershow.id}`, {
         method: 'DELETE',
       })
       .then(card.remove()) 
@@ -265,7 +264,7 @@ function buildBetterShowCard(show, usershow, season) {
 function buildBetterEpisodeCards(episodes, season) {
   let episodeRow = document.getElementById("episodeRow")
   episodeRow.innerHTML=''
-  fetch(`http://localhost:3000/user_episodes/${sessionStorage.getItem("user")}`)
+  fetch(`http://localhost:8008/user_episodes/${sessionStorage.getItem("user")}`)
   .then(resp => resp.json())
   .then(resp=> { console.log(resp)
     let newresp=resp.map(resp=> resp.episode_id)
@@ -325,7 +324,7 @@ function handleSeen (episode, infoDiv) {
     let data ={ "user_id": sessionStorage.getItem("user"),
     "episode_id": episode.id
     }
-    fetch('http://localhost:3000/user_episodes', {
+    fetch('http://localhost:8008/user_episodes', {
     method: 'POST',
     headers: {
     'Content-Type': 'application/json',
@@ -386,7 +385,7 @@ function start() {
       const data = { username: uname, 
                     location: loc };
                    
-      fetch('http://localhost:3000/users', {
+      fetch('http://localhost:8008/users', {
         method: 'POST', // or 'PUT'
         headers: {
           'Content-Type': 'application/json',
@@ -406,7 +405,7 @@ function start() {
     }
   
     function findUser(uname, loc){
-      fetch('http://localhost:3000/users')
+      fetch('http://localhost:8008/users')
       .then(resp=> resp.json())
       .then(resp=>{
         user=resp.find(user => user.username==uname && user.location==loc)
