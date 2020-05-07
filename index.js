@@ -377,7 +377,7 @@ function handleSeen (episode, infoDiv, length) {
     watchedNum.innerHTML = `<h2>${newnum}</h2>`
     let newnum2= parseInt(watchedNumToday.firstChild.innerText)+1
     watchedNumToday.innerHTML = `<h2>${newnum2}</h2>`
-
+    makestatusbar(parseInt(el.id)+((1/length)*100))
     infoDiv.classList.toggle("seen")
     infoDiv.parentNode.classList.toggle("seen")
     infoDiv.nextSibling.getElementsByTagName("img")[0].src="img/visibility-button.png"
