@@ -10,8 +10,9 @@ class UserEpisodesController < ApplicationController
         # {
         #     "user_id": 1,
         #     "episdoe_id": 5,
+        #     "runtime":1
         # }
-        user_episode=UserEpisode.create(user_id: params["user_id"].to_i, episode_id: params["episode_id"].to_i)
+        user_episode=UserEpisode.create(user_id: params["user_id"].to_i, episode_id: params["episode_id"].to_i, runtime: params["runtime"].to_i)
       
         render json: user_episode
       end
@@ -22,6 +23,6 @@ class UserEpisodesController < ApplicationController
       end
 
       def user_params
-        params.require(:user_id, :episode_id)
+        params.require(:user_id, :episode_id, :runtime)
       end
 end

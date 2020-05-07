@@ -3,7 +3,9 @@ class UserShowsController < ApplicationController
     def show
         user = User.find(params[:id])
         user_shows=user.user_shows
-        render json: user_shows.to_json(:include => [:show], :except => [:updated_at])
+        render json: user_shows.to_json(
+          :include => {:show => {:include => :users }}
+    )
       end
 
       def create

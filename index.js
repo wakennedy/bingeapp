@@ -5,6 +5,9 @@ const searchResults = document.getElementsByClassName("div search-result")[0]
 const logoutbtn=document.getElementById("logout")
 const seasonSelector = document.getElementById("formControlSelect")
 const collapseParent = document.getElementById("collapseExample")
+let welcomeUser = document.getElementById(773)
+let followerCount = document.getElementById(584)
+let runtimeCount = document.getElementById(222)
 
 myshowbtn.addEventListener("click", event => showUserShows())
 searchForm.addEventListener("submit", event => handleSearch(event))
@@ -13,7 +16,7 @@ showUserShows()
 start()
 
 myshowbtn.addEventListener("click", () => {
-  collapseParent.innerHTML=""
+  collapseParent.innerHTML=``
   showUserShows()})
 searchForm.addEventListener("submit", event => {
   collapseParent.classList.add('hidden')
@@ -25,7 +28,7 @@ function handleSearch(e) {
   e.preventDefault()
   fetch(`http://api.tvmaze.com/search/shows?q=${e.target.title.value}`)
   .then(resp => resp.json())
-  .then(resp => {parent.innerText = ""
+  .then(resp => {parent.innerText = ``
     resp.forEach(title => {
      makeCard(title)
   })
@@ -75,11 +78,8 @@ function makeCard(title) {
 
   let follow=document.createElement('div')
   follow.className="col-sm-12 information-right"
-  follow.innerHTML =`
-        <div class="">
-          <div class="follow" style= "cursor: pointer">
-              <img src="img/plus.png" alt="">
-        </div>`
+  follow.innerHTML =`<div class="follow" style= "cursor: pointer">
+              <img src="img/plus.png" alt="">`
 
   div4.append(follow)
   div3.appendChild(div4)
@@ -91,6 +91,8 @@ function makeCard(title) {
 }
 
 function handleFollow(e,object){ 
+  let number=parseInt(followerCount.getElementsByTagName('h2')[0].innerText)
+  followerCount.getElementsByTagName('h2')[0].innerText=number+1
   let data ={ "user_id": sessionStorage.getItem("user"),
                   "api_id": object.show.id,
                   "title": object.show.name
@@ -146,23 +148,25 @@ function makeusercards(title, usershow){
       <div class="col-sm-6 information-left">
         <h3>${title.name}</h3>
         <h6>${title.network.name} - ${title.premiered}</h6>
-        <img src="img/seo-and-web.png" alt="">
       </div>`
   }
   else {
     div4.innerHTML =`
     <div class="col-sm-6 information-left">
     <h3>${title.name}</h3>
-    <img src="img/seo-and-web.png" alt="">
   </div>`
+  }
+
+  if (usershow){
+   let el = document.createElement('h6')
+   el.innerHTML= `<img src="img/seo-and-web.png" alt=""> ${usershow.show.users.length} followers`
+   div4.getElementsByTagName('div')[0].appendChild(el)
   }
   let follow=document.createElement('div')
   follow.className="col-sm-6 information-right"
   follow.innerHTML =`
-        <div class="">
           <div class="follow" style= "cursor: pointer">
-          <span class="remove"> <img id="remove" src="img/delete.png" alt=""> </span>
-        </div>`
+          <span class="remove"> <img id="remove" src="img/delete.png" alt=""> </span>`
   let info=document.createElement('div')
   info.className="col-sm-12 information-right"
   info.innerHTML =`     
@@ -192,7 +196,7 @@ function handleDelete(usershow, card){
 function buildBetterShowCard(show, usershow, season) {
   collapseParent.classList.remove('hidden')
   parent.innerHTML=""
-  collapseParent.innerHTML=""
+  collapseParent.innerHTML=`<div id="bar"></div>`
   makeusercards(show)
   el= document.createElement('div')
   el.innerHTML=`
@@ -203,7 +207,7 @@ function buildBetterShowCard(show, usershow, season) {
     <h6>18555</h6>
   </div>
   <div class="col-sm-12" id="showSummary">
-    <p>${show.summary}</p>
+    <p>${show.summary }</p>
   </div>
   <div class="col-sm-6 tableinformation">
     <table class="table">
@@ -228,6 +232,8 @@ function buildBetterShowCard(show, usershow, season) {
                   </select>
                 </div>
               </div>
+            </div>
+            <div class="col-md-6 watchall" id="watchall">
             </div>
           </div>
         </div>
@@ -256,9 +262,11 @@ function buildBetterShowCard(show, usershow, season) {
       let option=document.createElement('option')
       option.value=i+1
       option.innerText=`Season ${i+1}`
+      if (option.value==season){
+        option.setAttribute('selected', true)
+      }
       seasonform.append(option)
     }
-
     buildBetterEpisodeCards(resp, season)})
 } 
 
@@ -267,11 +275,13 @@ function buildBetterEpisodeCards(episodes, season) {
   episodeRow.innerHTML=''
   fetch(`http://localhost:8008/user_episodes/${sessionStorage.getItem("user")}`)
   .then(resp => resp.json())
-  .then(resp=> { console.log(resp)
-    let newresp=resp.map(resp=> resp.episode_id)
+  .then(resp=> { let newresp=resp.map(resp=> resp.episode_id)
     let counter=0
     if (season){
       episodes=episodes.filter(ep => ep.season == season)
+      length=episodes.length
+      let el=document.getElementsByClassName("watchall")[0]
+      el.innerHTML=`<button class="checksesion">Mark season ${season} as watched</button>`
     }
     episodes.forEach(episode => {
     let totalDiv = document.createElement('div')
@@ -299,43 +309,47 @@ function buildBetterEpisodeCards(episodes, season) {
     infoDiv.className = "episode-title"
 
     div3.appendChild(infoDiv)
-
-    let titleh5 = document.createElement('h5')
-    titleh5.innerText = `${episode.name}`
-    infoDiv.appendChild(titleh5)
-
-    let airh6 = document.createElement('h6')
-    airh6.innerText = `Air Date: ${episode.airdate}`
-    infoDiv.appendChild(airh6)
-
+    infoDiv.innerHTML=`<h5>${episode.number}. ${episode.name}</h5> <h6>Air Date: ${episode.airdate}<br>Runtime: ${episode.runtime} min </h6>${episode.summary?episode.summary:""}`
+      if (Date.parse(episode.airdate)<new Date()){
     let icon = document.createElement('div')
     icon.className = "col-sm-12 watched"
     icon.innerHTML = ` <img src="img/hide.png" alt="">`
     if (newresp.includes(episode.id)){
       counter++
+      infoDiv.id=resp.find(user_ep=> user_ep.episode_id==episode.id).id
       infoDiv.classList.toggle("seen")
+      infoDiv.parentNode.classList.toggle("seen")
       icon.innerHTML = ` <img src="img/visibility-button.png" alt="">`
       }
     div3.appendChild(icon)
-    icon.addEventListener('click', ()=> handleSeen(episode, infoDiv))
-
+    icon.addEventListener('click', ()=> handleSeen(episode, infoDiv, length))
+    }
   
     })
     let percent=(counter/(episodes.length))*100
-    let statusbar= document.createElement('div')
-    statusbar.innerHTML=`<div class="progress-wrap progress" data-progress-percent="">
-    <div class="progress-bar progress" style="height:24px;width:${percent}%"></div>
-  </div>`
-
-      collapseParent.prepend(statusbar)
+    makestatusbar(percent)
   })
 
 }
 
-function handleSeen (episode, infoDiv) {
+function makestatusbar(percent){
+  let statusbar= document.getElementById('bar')
+  statusbar.innerHTML=`<h6 class="percent" id="${percent}"> Percent Completed: ${Math.round(percent)}%</h6><div class="progress-wrap progress" data-progress-percent="">
+  <div class="progress-bar progress" style="height:24px;width:${percent}%"></div></div>`
+  collapseParent.removeChild(statusbar)
+  collapseParent.prepend(statusbar)
+}
+
+function handleSeen (episode, infoDiv, length) {
+  let number=parseInt(runtimeCount.getElementsByTagName('h2')[0].innerText)
+  
+  let el=document.getElementsByClassName("percent")[0]
+
   if (!infoDiv.classList.contains("seen")){
+    runtimeCount.getElementsByTagName('h2')[0].innerText=`${Math.round(number+(episode.runtime)/60)} hrs`
     let data ={ "user_id": sessionStorage.getItem("user"),
-    "episode_id": episode.id
+    "episode_id": episode.id,
+    "runtime": episode.runtime
     }
     fetch('http://localhost:8008/user_episodes', {
     method: 'POST',
@@ -347,6 +361,7 @@ function handleSeen (episode, infoDiv) {
     .then(response => response.json())
     .then(data => {
     infoDiv.classList.toggle("seen")
+    infoDiv.parentNode.classList.toggle("seen")
     infoDiv.nextSibling.getElementsByTagName("img")[0].src="img/visibility-button.png"
     console.log('Success:', data);
     })
@@ -355,9 +370,21 @@ function handleSeen (episode, infoDiv) {
     })
   }
   else {
-    infoDiv.classList.toggle("seen")
-    infoDiv.nextSibling.getElementsByTagName("img")[0].src="img/hide.png"
+    runtimeCount.getElementsByTagName('h2')[0].innerText=`${Math.round(number-(episode.runtime)/60)} hrs`
+    makestatusbar(parseInt(el.id)-((1/length)*100))
+    handleDeleteUserEpisode(infoDiv)
   }
+}
+
+function handleDeleteUserEpisode(infoDiv){
+  fetch(`http://localhost:3000/user_episodes/${infoDiv.id}`, {
+    method: 'DELETE',
+  })
+  .then(()=>{
+    infoDiv.classList.toggle("seen")
+    infoDiv.parentNode.classList.toggle("seen")
+    infoDiv.nextSibling.getElementsByTagName("img")[0].src="img/hide.png"
+    changeWelcome()}) 
 }
 
 //USER LOGIN STUFF
@@ -489,8 +516,7 @@ function start() {
   )
 
   //change welcome and tv-following count
-let welcomeUser = document.getElementById(773)
-let followerCount = document.getElementById(584)
+
 changeWelcome()
 function changeWelcome(){
   fetch(`http://localhost:8008/users/${sessionStorage.getItem("user")}`)
@@ -498,5 +524,11 @@ function changeWelcome(){
   .then(user=>{
   welcomeUser.innerHTML = `<h1> Hello, ${(user.username).charAt(0).toUpperCase() + (user.username).slice(1)}!</h1>`
   followerCount.innerHTML = `<h2>${user.shows.length}</h2>`
+  fetch(`http://localhost:3000/user_episodes/${sessionStorage.getItem("user")}`)
+  .then(resp=> resp.json())
+  .then(resp=>{
+
+   runtimeCount.innerHTML=`<h2>${Math.round(resp.reduce((sum, ep) => sum + ep.runtime, 0)/60)} hrs</h2>` 
+  })
 })
 }
