@@ -74,7 +74,7 @@ function makeCard(title) {
     }
 
   let follow=document.createElement('div')
-  follow.className="col-sm-6 information-right"
+  follow.className="col-sm-12 information-right"
   follow.innerHTML =`
         <div class="">
           <div class="follow" style= "cursor: pointer">
@@ -164,7 +164,7 @@ function makeusercards(title, usershow){
           <span class="remove"> <img id="remove" src="img/delete.png" alt=""> </span>
         </div>`
   let info=document.createElement('div')
-  info.className="col-sm-6 information-right"
+  info.className="col-sm-12 information-right"
   info.innerHTML =`     
       <div class="information-button">
         <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
@@ -186,7 +186,7 @@ function handleDelete(usershow, card){
       fetch(`http://localhost:8008/user_shows/${usershow.id}`, {
         method: 'DELETE',
       })
-      .then(card.remove()) 
+      .then(changeWelcome()) 
 }
 
 function buildBetterShowCard(show, usershow, season) {
@@ -225,17 +225,8 @@ function buildBetterShowCard(show, usershow, season) {
               <div class="col-md-6">
                 <div class="form-group">
                    <select class="form-control" id="formControlSelect">
-                    <option>Season</option>
-                    <option>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
                   </select>
                 </div>
-              </div>
-              <div class="col-md-6">
-                <button class="checksesion">Mark season 2 as watched</button>
               </div>
             </div>
           </div>
@@ -250,7 +241,8 @@ function buildBetterShowCard(show, usershow, season) {
 </div>  
   `
   collapseParent.prepend(el)
-  document.getElementById("formControlSelect").addEventListener("change", (event)=>  {
+  let seasonform=document.getElementById("formControlSelect")
+  seasonform.addEventListener("change", (event)=>  {
     event.preventDefault()
     buildBetterShowCard(show, usershow, event.target.value)
   })
@@ -258,6 +250,15 @@ function buildBetterShowCard(show, usershow, season) {
   fetch(`http://api.tvmaze.com/shows/${show.id}/episodes`)
   .then(resp => resp.json())
   .then(resp=> {
+    let seasonnumber= resp[resp.length-1].season
+
+    for(i=0; i< seasonnumber; i++) {
+      let option=document.createElement('option')
+      option.value=i+1
+      option.innerText=`Season ${i+1}`
+      seasonform.append(option)
+    }
+
     buildBetterEpisodeCards(resp, season)})
 } 
 
@@ -268,6 +269,7 @@ function buildBetterEpisodeCards(episodes, season) {
   .then(resp => resp.json())
   .then(resp=> { console.log(resp)
     let newresp=resp.map(resp=> resp.episode_id)
+    let counter=0
     if (season){
       episodes=episodes.filter(ep => ep.season == season)
     }
@@ -310,12 +312,23 @@ function buildBetterEpisodeCards(episodes, season) {
     icon.className = "col-sm-12 watched"
     icon.innerHTML = ` <img src="img/hide.png" alt="">`
     if (newresp.includes(episode.id)){
+      counter++
       infoDiv.classList.toggle("seen")
       icon.innerHTML = ` <img src="img/visibility-button.png" alt="">`
       }
     div3.appendChild(icon)
     icon.addEventListener('click', ()=> handleSeen(episode, infoDiv))
-    })})
+
+  
+    })
+    let percent=(counter/(episodes.length))*100
+    let statusbar= document.createElement('div')
+    statusbar.innerHTML=`<div class="progress-wrap progress" data-progress-percent="">
+    <div class="progress-bar progress" style="height:24px;width:${percent}%"></div>
+  </div>`
+
+      collapseParent.prepend(statusbar)
+  })
 
 }
 
@@ -352,27 +365,77 @@ function start() {
   //IF NOT SIGNED IN SHOW LOGIN HTML
   if (!sessionStorage.getItem("user")){
     let body=document.getElementsByTagName('body')[0]
-    body.innerText=""
-    let loginbtn=document.createElement('button')
-    loginbtn.innerText="LOGIN"
-    let signupbtn=document.createElement('button')
-    signupbtn.innerText="SIGNUP"
-    body.append(loginbtn,signupbtn)
+    body.innerHTML=`    <div class="container">
+    <div class="row">
+        <div class="col-lg-3 col-md-2"></div>
+        <div class="col-lg-6 col-md-8 login-box">
+            <div class="col-lg-12 login-key">
+                <i class="fa fa-key" aria-hidden="true"></i>
+            </div>
+            <div class="col-lg-12 login-title">
+              WELCOME TO BINGE!
+            </div>
+            <div class="col-lg-12 login-form">
+                <div class="col-lg-12 login-form">                        
+                        <div class="col-lg-12 loginbttm">
+                            <div class="col-lg-6 login-btm login-text">
+                                <!-- Error Message -->
+                            </div>
+                            <div class="col-lg-6 login-btm login-button">
+                                <button class="signup btn btn-outline-primary">SIGNUP</button>
+                                <button class="btn btn-outline-primary">LOGIN</button>
+                            </div>
+                        </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-2"></div>
+        </div>
+    </div>`
+    console.log(document.getElementsByClassName("btn")[0])
+    let loginbtn= document.getElementsByClassName("btn")[1]
+    let signupbtn= document.getElementsByClassName("signup")[0]
     signupbtn.addEventListener('click', ()=> signuporlogin(event, true))
     loginbtn.addEventListener('click', ()=> signuporlogin(event, false))
   }
-  
   //SIGN UP
     function signuporlogin(event, signup){
       let body=document.getElementsByTagName('body')[0]
-      body.innerHTML=""
-      let form=document.createElement("form")
-      form.innerHTML=  `<label for="uname"><b>Username</b></label>
-      <input type="text" placeholder="Enter Username" name="uname" required>
-      <label for="uname"><b>Location</b></label>
-      <input type="text" placeholder="Enter Location" name="location" required>
-      <button type="submit">Signup</button>`
-      body.append(form)
+      body.innerHTML=`    <div class="container">
+      <div class="row">
+          <div class="col-lg-3 col-md-2"></div>
+          <div class="col-lg-6 col-md-8 login-box">
+              <div class="col-lg-12 login-key">
+                  <i class="fa fa-key" aria-hidden="true"></i>
+              </div>
+              <div class="col-lg-12 login-title">
+                WELCOME TO BINGE!
+              </div>
+              <div class="col-lg-12 login-form">
+                  <div class="col-lg-12 login-form">
+                      <form>
+                          <div class="form-group">
+                              <label class="form-control-label">USERNAME</label>
+                              <input type="text" class="form-control" id="input-login" name="uname">
+                          </div>
+                          <div class="form-group">
+                              <label class="form-control-label">LOCATION</label>
+                              <input type="text" class="form-control" id="input-login" name="location">
+                          </div>
+                          <div class="col-lg-12 loginbttm">
+                              <div class="col-lg-6 login-btm login-text">
+                                  <!-- Error Message -->
+                              </div>
+                              <div class="col-lg-6 login-btm login-button">
+                                  <button type="submit" class="btn btn-outline-primary">SUBMIT</button>
+                              </div>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+              <div class="col-lg-3 col-md-2"></div>
+          </div>
+      </div>`
+      let form=document.getElementsByTagName("form")[0]
       form.addEventListener('submit', (event)=>{
         event.preventDefault()
         let username=event.target.uname.value
@@ -424,3 +487,16 @@ function start() {
     location.reload()
   } 
   )
+
+  //change welcome and tv-following count
+let welcomeUser = document.getElementById(773)
+let followerCount = document.getElementById(584)
+changeWelcome()
+function changeWelcome(){
+  fetch(`http://localhost:3000/users/${sessionStorage.getItem("user")}`)
+  .then(resp=> resp.json())
+  .then(user=>{
+  welcomeUser.innerHTML = `<h1> Hello, ${(user.username).charAt(0).toUpperCase() + (user.username).slice(1)}!</h1>`
+  followerCount.innerHTML = `<h2>${user.shows.length}</h2>`
+})
+}
