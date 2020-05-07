@@ -8,6 +8,8 @@ const collapseParent = document.getElementById("collapseExample")
 let welcomeUser = document.getElementById(773)
 let followerCount = document.getElementById(584)
 let runtimeCount = document.getElementById(222)
+let watchedNum = document.getElementById(395)
+let watchedNumToday = document.getElementById(111)
 
 myshowbtn.addEventListener("click", event => showUserShows())
 searchForm.addEventListener("submit", event => handleSearch(event))
@@ -135,6 +137,7 @@ function makeusercards(title, usershow){
   div1.className="container-fluid"
   let div2=document.createElement('div')
   div2.className="row"
+  div2.classList.add("megacard")
   div2.innerHTML =`
         <div class="col-sm-12 cardimage">
           <img src="${title.image.original}" alt="">
@@ -159,7 +162,8 @@ function makeusercards(title, usershow){
 
   if (usershow){
    let el = document.createElement('h6')
-   el.innerHTML= `<img src="img/seo-and-web.png" alt=""> ${usershow.show.users.length} followers`
+   el.setAttribute("style","padding: 10px;")
+   el.innerHTML= `<img src="img/seo-and-web.png" alt=""> ${usershow.show.users.length==1? usershow.show.users.length + " follower": usershow.show.users.length + " followers"}`
    div4.getElementsByTagName('div')[0].appendChild(el)
   }
   let follow=document.createElement('div')
@@ -170,18 +174,18 @@ function makeusercards(title, usershow){
   let info=document.createElement('div')
   info.className="col-sm-12 information-right"
   info.innerHTML =`     
-      <div class="information-button">
+      <div class="col-sm-12 information-button">
         <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
           <img src="img/Information.png" alt="">
         </a>  
       </div>`
 
-  div4.append(follow,info)
+  div4.append(follow)
   div3.appendChild(div4)
-  div2.appendChild(div3)
-  div1.appendChild(div2)
-  card.appendChild(div1)
-  parent.appendChild(card)
+  div2.append(div3, info)
+  div1.append(div2)
+  card.append(div1)
+  parent.append(card)
   info.addEventListener('click',event => buildBetterShowCard(title, usershow))
   follow.addEventListener('click', event => handleDelete(usershow, card))
 }
@@ -229,6 +233,7 @@ function buildBetterShowCard(show, usershow, season) {
               <div class="col-md-6">
                 <div class="form-group">
                    <select class="form-control" id="formControlSelect">
+                   <option>ALL</option>
                   </select>
                 </div>
               </div>
@@ -277,11 +282,19 @@ function buildBetterEpisodeCards(episodes, season) {
   .then(resp => resp.json())
   .then(resp=> { let newresp=resp.map(resp=> resp.episode_id)
     let counter=0
-    if (season){
+    if (season && season != "ALL"){
       episodes=episodes.filter(ep => ep.season == season)
       length=episodes.length
       let el=document.getElementsByClassName("watchall")[0]
-      el.innerHTML=`<button class="checksesion">Mark season ${season} as watched</button>`
+      el.innerHTML=`<button class="checksesion" style="
+      margin: 10;
+      /* padding: 100px; */
+      position: relative;
+      left: 375px;
+      top: -70px;">Mark season ${season} as watched</button>`
+      el.addEventListener("click", function(event){
+       handleSeenALL(episodes)
+      })
     }
     episodes.forEach(episode => {
     let totalDiv = document.createElement('div')
@@ -295,6 +308,7 @@ function buildBetterEpisodeCards(episodes, season) {
 
     let div3 = document.createElement('div')
     div3.className = "row"
+    div3.classList.add("info-div-parent")
     div2.appendChild(div3)
 
     let imgDiv = document.createElement('div')
@@ -342,7 +356,6 @@ function makestatusbar(percent){
 
 function handleSeen (episode, infoDiv, length) {
   let number=parseInt(runtimeCount.getElementsByTagName('h2')[0].innerText)
-  
   let el=document.getElementsByClassName("percent")[0]
 
   if (!infoDiv.classList.contains("seen")){
@@ -360,6 +373,11 @@ function handleSeen (episode, infoDiv, length) {
     })
     .then(response => response.json())
     .then(data => {
+    let newnum= parseInt(watchedNum.firstChild.innerText)+1
+    watchedNum.innerHTML = `<h2>${newnum}</h2>`
+    let newnum2= parseInt(watchedNumToday.firstChild.innerText)+1
+    watchedNumToday.innerHTML = `<h2>${newnum2}</h2>`
+
     infoDiv.classList.toggle("seen")
     infoDiv.parentNode.classList.toggle("seen")
     infoDiv.nextSibling.getElementsByTagName("img")[0].src="img/visibility-button.png"
@@ -373,7 +391,35 @@ function handleSeen (episode, infoDiv, length) {
     runtimeCount.getElementsByTagName('h2')[0].innerText=`${Math.round(number-(episode.runtime)/60)} hrs`
     makestatusbar(parseInt(el.id)-((1/length)*100))
     handleDeleteUserEpisode(infoDiv)
+    let newnum= parseInt(watchedNum.firstChild.innerText)-1
+    watchedNum.innerHTML = `<h2>${newnum}</h2>`
+    let newnum2= parseInt(watchedNumToday.firstChild.innerText)-1
+    watchedNumToday.innerHTML = `<h2>${newnum2}</h2>`
   }
+}
+
+function handleSeenALL(episodes){
+  data={ "user_id": sessionStorage.getItem("user"),
+          "episode_list": episodes
+        }
+  fetch('http://localhost:3000/user_episodes', {
+    method: 'POST',
+    headers: {
+    'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+    })
+    .then(resp => {let els=document.getElementsByClassName("info-div-parent")
+      for (var i = 0; i < els.length; i++) {
+        els[i].classList.toggle("seen")
+      }
+      let els2=document.getElementsByClassName("episode-title")
+      for (var i = 0; i < els2.length; i++) {
+        els2[i].classList.toggle("seen")
+        els2[i].nextSibling.getElementsByTagName("img")[0].src="img/visibility-button.png"
+      }
+      makestatusbar(100)
+  })
 }
 
 function handleDeleteUserEpisode(infoDiv){
@@ -392,13 +438,10 @@ function start() {
   //IF NOT SIGNED IN SHOW LOGIN HTML
   if (!sessionStorage.getItem("user")){
     let body=document.getElementsByTagName('body')[0]
-    body.innerHTML=`    <div class="container">
+    body.innerHTML=`    <div class="container login-page">
     <div class="row">
         <div class="col-lg-3 col-md-2"></div>
         <div class="col-lg-6 col-md-8 login-box">
-            <div class="col-lg-12 login-key">
-                <i class="fa fa-key" aria-hidden="true"></i>
-            </div>
             <div class="col-lg-12 login-title">
               WELCOME TO BINGE!
             </div>
@@ -427,13 +470,10 @@ function start() {
   //SIGN UP
     function signuporlogin(event, signup){
       let body=document.getElementsByTagName('body')[0]
-      body.innerHTML=`    <div class="container">
+      body.innerHTML=`    <div class="container login-page">
       <div class="row">
           <div class="col-lg-3 col-md-2"></div>
           <div class="col-lg-6 col-md-8 login-box">
-              <div class="col-lg-12 login-key">
-                  <i class="fa fa-key" aria-hidden="true"></i>
-              </div>
               <div class="col-lg-12 login-title">
                 WELCOME TO BINGE!
               </div>
@@ -524,11 +564,21 @@ function changeWelcome(){
   .then(user=>{
   welcomeUser.innerHTML = `<h1> Hello, ${(user.username).charAt(0).toUpperCase() + (user.username).slice(1)}!</h1>`
   followerCount.innerHTML = `<h2>${user.shows.length}</h2>`
+})
+  fetch(`http://localhost:3000/user_episodes/${sessionStorage.getItem("user")}`)
+.then(resp => resp.json())
+.then(data=> {
+  let today=new Date()
+
+  let todayData=data.filter(user_ep=> (new Date(user_ep.created_at).toDateString()==today.toDateString()))
+  watchedNumToday.innerHTML = `<h2>${todayData.length}</h2>`
+  watchedNum.innerHTML = `<h2>${data.length}</h2>`
+})
+
   fetch(`http://localhost:3000/user_episodes/${sessionStorage.getItem("user")}`)
   .then(resp=> resp.json())
   .then(resp=>{
 
    runtimeCount.innerHTML=`<h2>${Math.round(resp.reduce((sum, ep) => sum + ep.runtime, 0)/60)} hrs</h2>` 
   })
-})
 }

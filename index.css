@@ -1,7 +1,10 @@
-body {
+html, body {
     margin: 0;
     font-family: 'Lato', sans-serif;
     background-color: #F1F1F1;
+    padding-bottom: 0px;
+
+
   }
   .hero {
     background: url('img/Hero.png');
@@ -110,6 +113,7 @@ padding: 50px;
       width: 100%;
       text-align: right;
       padding-top: 50px;
+      padding-bottom: 30px;
       padding-right: 15px;
     }
     #all-informations{
@@ -165,11 +169,14 @@ padding: 50px;
     float: right;
 }
 #episodeee{
-  border: solid #FA6600;
+  /* border: solid #FA6600; */
   border-width:3px;
   padding: 0px  !important;
   margin: 15px !important;
 
+}
+.info-div-parent {
+  border: solid #FA6600;
 }
 .episode-image{
   
@@ -212,9 +219,11 @@ padding: 50px;
 }
 
 
-body {
+html, body {
   background: #133B63;
   font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding-bottom: 0px;
 }
 
 .login-box {
@@ -412,6 +421,35 @@ a {
 
 .progress-bar {
   background-color: #FA6600 !important;
+  left: 0;
+  position: absolute;
+  top: 0;
+}
+
+.footer {
+  background-color: #FA6600;
+  color: #ffff;
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+.footer i{
+  font-size: 30px;
+  color: #ffff;
+  text-align: center;
+  padding-bottom: 10px;
+
+
+}
+.footer a{
+padding-right: 10px;
+}
+
+.login-page{
+  height: 800px;
+}
+
+
   left: -20;
   position: absolute;
   top: 0;
@@ -420,4 +458,16 @@ a {
 
 h6 {
   padding: 20px;
+}
+.megacard {
+  justify-content: space-between;
+  height: 100%;
+}
+
+.container-fluid {
+  height: 100%;
+}
+
+#collapseExample {
+  width: 100%
 }

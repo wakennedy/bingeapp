@@ -14,7 +14,6 @@ class UserShowsController < ApplicationController
         #     "api_id": 5,
         #     "title": "Under the Dome"
         # }
-        
         sentshow= Show.find_by(api_id: params["api_id"].to_i)
         user=User.find(params["user_id"].to_i)
         
