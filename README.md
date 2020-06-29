@@ -1,60 +1,49 @@
-TV Binge App
+# BINGE
 
-User Stores
+Binge is a TV show tracking application. It allows users to follow and save their tv shows as well as receive real-time analytics of their tv browsing habits.
+​
+​
 
-Basic MVP 
-//Create an account (C)
-//Login to your account (R)
-Edit your account (U)
-//Save their shows ©
-//See your list of shows
-//Edit your list of shows (U)
-Mark episodes watched (U)
-//Remove shows from list (D)
-//View basic analytics
-//Make it so users can't say they’ve seen something thats not out yet
+### PURPOSE
 
-Stretch
-Advanced analytics
-Comments on episode?
-//Status bar 
-Random new show to add
-search without loggging in 
-Change view colour
+We built this application to allow users to gain visibility on what shows they are watching, how much progress they have made for each show, and the pertinent information about each show. In the age when streaming has dominated the viewer industry, we realized it would be very engaging to allow users to gain access to their own streaming data. Users typically follow more than one show on Netflix, and it is a common occurrence for those shows to get lost. Binge fills in those gaps allowing users to keep track of their shows and their own progress so they never leave tv show behind. Binge ensures users are getting their money's worth out of streaming services like Netflix and Hulu so that they never forget a TV show again.
+​
 
-Models
+### TECHNOLOGY USED
 
-Users
-Username:
-Location:
+- Ruby on Rails
+- Javascript, HTML, CSS
+- Online api from tvmaze.com
+  ​
+  ​
 
-UserShows
-User_id
-Show_id
-episodes_watched
+### FEATURES
 
-Shows
-Id:
-Title: 
-Number of episodes:
+- Login/Logout
+  - User can sign up with a new account with username and location
+  - User can login with an existing account with same credentials
+  - If not logged in, sent to login page
+  - User can logout
+- TV Shows
+  - Can search for a TV show (incomplete search)
+  - Can save a show
+  - Can see list of saved shows, with its information
+  - Can remove show from list
+- Episodes
+  - Can see list of episodes
+  - Can filter episodes by season
+  - Can mark episode as seen
+  - Can mark entire season as seen
+- Analytics
+  _ Can see number of shows saved, number of episodes seen, number of episodes seen that current day, total hours watched
+  _ Can see number of people following that show \* Can see percentage completed of the show and the season
+  ​
+  ​
 
-API: http://www.tvmaze.com/api
+### HOW TO USE
 
-ONE PAGE
+To start, a user must signup with their username and location. After clicking submit, they will now have access to the web application and can login using the same credentials. After being redirected they are then greeted with a welcome of their username along with a search bar. A user can then search a query of a show they are watching into the search bar where a list of show cards will appear under after. They can scroll down and add their favorite shows using the plus button found in the show card directly underneath the image. After clicking the plus sign, they are then directed to their user page which compiles all the shows they are watching. The numbers displayed right under the welcome indicate the analytics for the user including the number of tv shows saved, number of episodes watched as well as the number of episodes watched that day. The user also has the option to click on the "i" button on each show card representing information. Upon clicking, the page will lengthen detailing the relevant information for that show. This includes seasons found in a drop down menu as well episodes on a grid. The episodes give the user ability to watch a show as seen which then updates the analytics immediately. When the user is done with the information, they can click it again and it will toggle it out. Lastly, a user can logout and be assured that
 
-Login
-User dashboard
-Card views for tv shows
-TV shows will have a remove button (ask for validation)
-Search for new show to add
-TV show dashboard
-Update episodes watched
-Have a feature to watch entire season or show
+### VIDEO DEMO
 
-Communication plan
-Slack communication 
-Focus on pair programming 
-Stand up first thing each day
-
-Tasks 
-Patch for episode
+Watch here: https://www.youtube.com/watch?v=APDFt2DpePc
